@@ -3,3 +3,7 @@
 ./CMakeLists.txt
 ./server
 ./client
+./client.dSYM
+./server.dSYM
+./.idea
+./.DS_Stores
