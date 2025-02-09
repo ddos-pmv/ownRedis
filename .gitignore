@@ -1,5 +1,6 @@
 ./idea
 ./cmake-build-debug
+./cmake-build-relise
 ./CMakeLists.txt
 ./server
 ./client

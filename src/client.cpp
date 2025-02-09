@@ -93,18 +93,19 @@ int main()
         die("Error connecting");
     }
 
+    sleep(5);
     int32_t err = query(fd, "hello");
-    if ( err )
-    {
-        close(fd);
-        die("query() error");
-    }
-    sleep(3);
-    err = query(fd, "hello2");
+    // if ( err )
+    // {
+    //     close(fd);
+    //     die("query() error");
+    // }
+    // err = query(fd, "hello2");
+
     close(fd);
-    if ( err )
-    {
-        die("query() error");
-    }
+    // if ( err )
+    // {
+    //     die("query() error");
+    // }
     return 0;
 }
