@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <cassert>
 #include <iostream>
+#include <unordered_map>
+#include <deque>
 #include <cerrno>
 
 const size_t k_max_msg = 4096;
@@ -88,25 +90,6 @@ static Conn * handle_accept(int fd)
     return conn;
 }
 
-// static int32_t write_full(int fd, const char * buf, size_t sizeToWrite)
-// {
-//     while ( sizeToWrite > 0 )
-//     {
-//         ssize_t rv = write(fd, buf, sizeToWrite);
-//         if ( rv <= 0 )
-//         {
-//             return -1;
-//         }
-//         if ( rv > sizeToWrite )
-//         {
-//             return -1;
-//         }
-//         // assert( rv <= sizeToWrite );
-//         buf += rv;
-//         sizeToWrite -= rv;
-//     }
-//     return 0;
-// }
 static void buf_append(std::vector<uint8_t> &buf, const uint8_t * data, size_t len)
 {
     buf.insert(buf.end(), data, data + len);
@@ -127,6 +110,11 @@ static bool handle_one_line(Conn * conn)
     uint32_t len = 0;
     std::memcpy(&len, conn->incoming.data(), 4);
 
+    if ( len != 5 )
+    {
+        for ( auto ch: conn->incoming ) std::cout << (int) ch << ' ';
+    }
+
     if ( len > k_max_msg )
     {
         msg("too long msg (greater then k_max_msg)");
@@ -136,6 +124,9 @@ static bool handle_one_line(Conn * conn)
 
     if ( len + 4 > conn->incoming.size() )
     {
+        std::cerr << "len: " << len;
+        std::cerr << "  real size:" << conn->incoming.size() << '\n';
+        for ( auto ch: conn->incoming ) std::cout << (int) ch << ' ';
         msg("wrong len of line");
         return false;
     }
@@ -146,7 +137,7 @@ static bool handle_one_line(Conn * conn)
 
     //! generate response (echo)
     buf_append(conn->outgoing, reinterpret_cast<uint8_t *>(&len), 4);
-    buf_append(conn->outgoing, &conn->incoming[4], len);
+    buf_append(conn->outgoing, conn->incoming.data() + 4, len);
 
     //! remove message
     buf_consume(conn->incoming, len + 4);

@@ -8,3 +8,4 @@
 ./server.dSYM
 ./.idea
 ./.DS_Stores
+./tests
