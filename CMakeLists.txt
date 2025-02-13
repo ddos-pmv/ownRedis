@@ -5,8 +5,13 @@ set(CMAKE_CXX_STANDARD 11)   # Enable c++14 standard
 find_package(GTest REQUIRED)
 
 
-#set(SOURCE_FILES src/server.cpp)
-#add_executable(ownRedis ${SOURCE_FILES})
+set(SERVER_FILES src/server.cpp)
+add_executable(server ${SERVER_FILES})
+
+set(CLIENT_FILES src/TcpClient.cpp
+        src/TcpClient.h
+        src/clientClass.cpp)
+add_executable(client ${CLIENT_FILES})
 
 
 #set(TEST_FILES tests/main.cpp src/server.cpp)
@@ -16,6 +21,8 @@ find_package(GTest REQUIRED)
 find_package(benchmark REQUIRED)
 set(BENCHMARK_FILES
         #        benchmark/BM_Buf_append.cpp
-        benchmark/BM_Server.cpp)
+        src/TcpClient.cpp
+        benchmark/BM_Server.cpp
+        src/TcpClient.h)
 add_executable(ownRedisBenchmark ${BENCHMARK_FILES})
 target_link_libraries(ownRedisBenchmark benchmark::benchmark)

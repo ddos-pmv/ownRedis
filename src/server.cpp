@@ -110,10 +110,7 @@ static bool handle_one_line(Conn * conn)
     uint32_t len = 0;
     std::memcpy(&len, conn->incoming.data(), 4);
 
-    if ( len != 5 )
-    {
-        for ( auto ch: conn->incoming ) std::cout << (int) ch << ' ';
-    }
+    std::cout << "len: " << len << '\n';
 
     if ( len > k_max_msg )
     {
