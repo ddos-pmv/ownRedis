@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <cassert>
 #include <iostream>
+#include <unordered_map>
+#include <deque>
 #include <cerrno>
 
 const size_t k_max_msg = 4096;
@@ -20,7 +22,7 @@ static void die(const char * msg)
 
 static void msg_errno(const char * msg)
 {
-    std::cout << "errno: " << std::strerror(errno) << msg << '\n';
+    std::cerr << "errno: " << std::strerror(errno) << ". " << msg << '\n';
 }
 
 static void msg(const char * msg)
@@ -50,6 +52,9 @@ static void fd_set_nb(int fd)
 struct Conn {
     int fd = -1;
 
+    uint16_t port;
+    char addrBuf[INET_ADDRSTRLEN];
+
     bool want_read = false;
     bool want_write = false;
     bool want_close = false;
@@ -77,31 +82,14 @@ static Conn * handle_accept(int fd)
     fd_set_nb(connFd);
 
     Conn * conn = new Conn();
+    conn->port = ntohs(client_addr.sin_port);
+    inet_ntop(AF_INET, &client_addr.sin_addr, conn->addrBuf, INET_ADDRSTRLEN);
     conn->fd = connFd;
     conn->want_read = true;
 
     return conn;
 }
 
-// static int32_t write_full(int fd, const char * buf, size_t sizeToWrite)
-// {
-//     while ( sizeToWrite > 0 )
-//     {
-//         ssize_t rv = write(fd, buf, sizeToWrite);
-//         if ( rv <= 0 )
-//         {
-//             return -1;
-//         }
-//         if ( rv > sizeToWrite )
-//         {
-//             return -1;
-//         }
-//         // assert( rv <= sizeToWrite );
-//         buf += rv;
-//         sizeToWrite -= rv;
-//     }
-//     return 0;
-// }
 static void buf_append(std::vector<uint8_t> &buf, const uint8_t * data, size_t len)
 {
     buf.insert(buf.end(), data, data + len);
@@ -122,6 +110,8 @@ static bool handle_one_line(Conn * conn)
     uint32_t len = 0;
     std::memcpy(&len, conn->incoming.data(), 4);
 
+    std::cout << "len: " << len << '\n';
+
     if ( len > k_max_msg )
     {
         msg("too long msg (greater then k_max_msg)");
@@ -131,16 +121,20 @@ static bool handle_one_line(Conn * conn)
 
     if ( len + 4 > conn->incoming.size() )
     {
+        std::cerr << "len: " << len;
+        std::cerr << "  real size:" << conn->incoming.size() << '\n';
+        for ( auto ch: conn->incoming ) std::cout << (int) ch << ' ';
         msg("wrong len of line");
         return false;
     }
 
 
-    std::cout << "[client msg]: " << std::string(conn->incoming.begin() + 4, conn->incoming.begin() + 4 + len) << '\n';
+    std::cout << "[client:" << conn->port << "]: " << std::string(conn->incoming.begin() + 4,
+                                                                  conn->incoming.begin() + 4 + len) << '\n';
 
     //! generate response (echo)
     buf_append(conn->outgoing, reinterpret_cast<uint8_t *>(&len), 4);
-    buf_append(conn->outgoing, &conn->incoming[4], len);
+    buf_append(conn->outgoing, conn->incoming.data() + 4, len);
 
     //! remove message
     buf_consume(conn->incoming, len + 4);
@@ -185,12 +179,12 @@ static void handle_read(Conn * conn)
 {
     uint8_t buf[64 * 1024];
     ssize_t rv = read(conn->fd, buf, sizeof( buf ));
-    if ( rv < 0 && errno == EINTR )
+    if ( rv < 0 && ( errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN ) )
     {
         return; //! not ready
     }
 
-    if ( rv < 0 )
+    if ( rv < 0 || errno == ECONNRESET )
     {
         msg_errno("read() error");
         conn->want_close = true;
@@ -201,7 +195,8 @@ static void handle_read(Conn * conn)
     {
         if ( conn->incoming.size() == 0 )
         {
-            msg("client closed");
+            std::string message("[client:" + std::to_string(conn->port) + "] - closed");
+            msg(message.c_str());
         }
         else
         {
@@ -265,6 +260,7 @@ int main()
 
     //! a map of all client connections, keyed by fd
     std::vector<Conn *> fd2conn;
+    std::unordered_map<int, Conn *> fd2connMap;
 
     //! the event loop
     std::vector<pollfd> poll_args;
@@ -274,7 +270,7 @@ int main()
 
         poll_args.emplace_back(pollfd{fd,POLLIN, 0});
 
-        for ( Conn * conn: fd2conn )
+        for ( const auto [key, conn]: fd2connMap )
         {
             if ( !conn )
             {
@@ -315,12 +311,8 @@ int main()
             if ( Conn * conn = handle_accept(fd) )
             {
                 //! put it into the map
-                if ( fd2conn.size() <= static_cast<size_t>(conn->fd) )
-                {
-                    fd2conn.resize(conn->fd + 1);
-                }
-                assert(!fd2conn[conn->fd]);
-                fd2conn[conn->fd] = conn;
+                assert(!fd2connMap[conn->fd]);
+                fd2connMap[conn->fd] = conn;
             }
         }
 
@@ -332,7 +324,8 @@ int main()
                 continue;
             }
 
-            Conn * conn = fd2conn[poll_args[i].fd];
+            Conn * conn = fd2connMap[poll_args[i].fd];
+
             if ( ready & POLLIN )
             {
                 assert(conn->want_read);
@@ -348,7 +341,7 @@ int main()
             if ( ready & POLLERR || conn->want_close )
             {
                 close(conn->fd);
-                fd2conn[conn->fd] = nullptr;
+                fd2connMap[conn->fd] = nullptr;
                 delete conn;
             }
         }
