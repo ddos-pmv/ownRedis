@@ -9,10 +9,15 @@
 #include <cassert>
 #include <iostream>
 #include <unordered_map>
+#include <map>
 #include <deque>
 #include <cerrno>
+// boost
+#include <boost/container/devector.hpp>
 
-const size_t k_max_msg = 4096;
+
+const size_t k_max_msg = 32 << 20;
+const size_t k_max_args = 200 * 1000;
 
 static void die(const char * msg)
 {
@@ -59,8 +64,8 @@ struct Conn {
     bool want_write = false;
     bool want_close = false;
     // buffered info
-    std::vector<uint8_t> incoming; // data to be parsed by app
-    std::vector<uint8_t> outgoing; // responses generate by app
+    boost::container::devector<uint8_t> incoming; // data to be parsed by app
+    boost::container::devector<uint8_t> outgoing; // responses generate by app
 };
 
 static Conn * handle_accept(int fd)
@@ -90,17 +95,138 @@ static Conn * handle_accept(int fd)
     return conn;
 }
 
-static void buf_append(std::vector<uint8_t> &buf, const uint8_t * data, size_t len)
+static void buf_append(boost::container::devector<uint8_t> &buf, const uint8_t * data, size_t len)
 {
     buf.insert(buf.end(), data, data + len);
 }
 
-static void buf_consume(std::vector<uint8_t> &buf, size_t n)
+static void buf_consume(boost::container::devector<uint8_t> &buf, size_t n)
 {
     buf.erase(buf.begin(), buf.begin() + n);
 }
 
-static bool handle_one_line(Conn * conn)
+enum RES_STATUS {
+    RES_OK = 0, // ok
+    RES_ERR = 1, // error
+    RES_NX = 2, // not found
+};
+
+struct Response {
+    uint32_t status = 0;
+    std::vector<uint8_t> data;
+};
+
+static bool read_u32(const uint8_t * &src, const uint8_t * srcEnd, uint32_t * dst)
+{
+    if ( src + 4 > srcEnd )
+    {
+        msg("read_u32() error");
+        return false;
+    }
+
+    std::memcpy(dst, src, 4);
+    src += 4;
+    return true;
+}
+
+//    2
+// +------+------+------+------+------+
+// | nstr | len1 | str1 | len2 | str2 |
+// +------+------+------+------+------+
+static bool read_str(const uint8_t * &src, const uint8_t * srcEnd, uint32_t strLen, std::string &dist)
+{
+    if ( src + strLen > srcEnd )
+    {
+        msg("read_str() error");
+        return false;
+    }
+
+    dist.assign(src, src + strLen);
+    src += strLen;
+    return true;
+}
+
+static int32_t parse_req(const uint8_t * src, std::vector<std::string> &dist, size_t srcLen)
+{
+    const uint8_t * srcEnd = src + srcLen;
+    uint32_t nstr = 0;
+    if ( !read_u32(src, srcEnd, &nstr) )
+    {
+        msg("Failed to read nstr");
+        return -1;
+    }
+
+
+    if ( nstr > k_max_args )
+    {
+        msg("Too many args");
+        return -1; //! safety limit
+    }
+
+
+    dist.reserve(nstr);
+    while ( dist.size() < nstr )
+    {
+        uint32_t len = 0;
+        if ( !read_u32(src, srcEnd, &len) )
+        {
+            return -1;
+        }
+        dist.emplace_back();
+        if ( !read_str(src, srcEnd, len, dist.back()) )
+        {
+            return -1;
+        }
+    }
+    if ( src != srcEnd )
+    {
+        msg("src != srcEnd");
+        return -1;
+    }
+
+
+    return 0;
+}
+
+static std::map<std::string, std::string> g_data;
+
+static void do_request(const std::vector<std::string> &cmd, Response &response)
+{
+    if ( cmd.size() == 2 && cmd[0] == "get" )
+    {
+        std::cerr << "get";
+        if ( g_data.find(cmd[1]) == g_data.end() )
+        {
+            response.status = RES_STATUS::RES_NX;
+            return;
+        }
+
+        const std::string &val = g_data[cmd[1]];
+        response.data.assign(val.begin(), val.end());
+    }
+    else if ( cmd.size() == 3 && cmd[0] == "set" )
+    {
+        g_data[cmd[1]] = cmd[2];
+    }
+    else if ( cmd.size() == 2 && cmd[0] == "del" )
+    {
+        g_data.erase(cmd[1]);
+    }
+    else
+    {
+        response.status = RES_STATUS::RES_ERR; // unrecognized command
+    }
+}
+
+static void make_response(Response &response, boost::container::devector<uint8_t> &out)
+{
+    uint32_t respLen = 4 + response.data.size();
+    buf_append(out, reinterpret_cast<uint8_t *>(&respLen), 4);
+    buf_append(out, reinterpret_cast<uint8_t *>(&response.status), 4);
+    buf_append(out, response.data.data(), response.data.size());
+}
+
+static bool try_one_request(Conn * conn)
 {
     if ( conn->incoming.size() < 4 )
     {
@@ -109,9 +235,6 @@ static bool handle_one_line(Conn * conn)
 
     uint32_t len = 0;
     std::memcpy(&len, conn->incoming.data(), 4);
-
-    std::cout << "len: " << len << '\n';
-
     if ( len > k_max_msg )
     {
         msg("too long msg (greater then k_max_msg)");
@@ -121,20 +244,26 @@ static bool handle_one_line(Conn * conn)
 
     if ( len + 4 > conn->incoming.size() )
     {
-        std::cerr << "len: " << len;
-        std::cerr << "  real size:" << conn->incoming.size() << '\n';
-        for ( auto ch: conn->incoming ) std::cout << (int) ch << ' ';
-        msg("wrong len of line");
+        msg("need read more");
         return false;
     }
 
+    const uint8_t * request = &conn->incoming[4];
 
-    std::cout << "[client:" << conn->port << "]: " << std::string(conn->incoming.begin() + 4,
-                                                                  conn->incoming.begin() + 4 + len) << '\n';
+    std::vector<std::string> cmd; //cmd exmaple: set [key] [value]
+    if ( parse_req(request, cmd, len) < 0 )
+    {
+        msg("bad request");
+        conn->want_close = true;
+        return false; // error parsing
+    }
+    Response response;
+    do_request(cmd, response);
+    make_response(response, conn->outgoing);
 
-    //! generate response (echo)
-    buf_append(conn->outgoing, reinterpret_cast<uint8_t *>(&len), 4);
-    buf_append(conn->outgoing, conn->incoming.data() + 4, len);
+    std::cout << "[client:" << conn->port << "]: ";
+    for ( const auto &arg: cmd )
+        std::cout << arg;
 
     //! remove message
     buf_consume(conn->incoming, len + 4);
@@ -210,7 +339,7 @@ static void handle_read(Conn * conn)
     buf_append(conn->incoming, buf, rv);
 
     //! handel requests line...
-    while ( handle_one_line(conn) )
+    while ( try_one_request(conn) )
     {
     };
 
