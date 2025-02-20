@@ -16,6 +16,9 @@
 #include <boost/container/devector.hpp>
 
 
+#include "Protocol.h"
+
+
 const size_t k_max_msg = 32 << 20;
 const size_t k_max_args = 200 * 1000;
 
@@ -116,78 +119,10 @@ struct Response {
     std::vector<uint8_t> data;
 };
 
-static bool read_u32(const uint8_t * &src, const uint8_t * srcEnd, uint32_t * dst)
-{
-    if ( src + 4 > srcEnd )
-    {
-        msg("read_u32() error");
-        return false;
-    }
-
-    std::memcpy(dst, src, 4);
-    src += 4;
-    return true;
-}
-
 //    2
 // +------+------+------+------+------+
 // | nstr | len1 | str1 | len2 | str2 |
 // +------+------+------+------+------+
-static bool read_str(const uint8_t * &src, const uint8_t * srcEnd, uint32_t strLen, std::string &dist)
-{
-    if ( src + strLen > srcEnd )
-    {
-        msg("read_str() error");
-        return false;
-    }
-
-    dist.assign(src, src + strLen);
-    src += strLen;
-    return true;
-}
-
-static int32_t parse_req(const uint8_t * src, std::vector<std::string> &dist, size_t srcLen)
-{
-    const uint8_t * srcEnd = src + srcLen;
-    uint32_t nstr = 0;
-    if ( !read_u32(src, srcEnd, &nstr) )
-    {
-        msg("Failed to read nstr");
-        return -1;
-    }
-
-
-    if ( nstr > k_max_args )
-    {
-        msg("Too many args");
-        return -1; //! safety limit
-    }
-
-
-    dist.reserve(nstr);
-    while ( dist.size() < nstr )
-    {
-        uint32_t len = 0;
-        if ( !read_u32(src, srcEnd, &len) )
-        {
-            return -1;
-        }
-        dist.emplace_back();
-        if ( !read_str(src, srcEnd, len, dist.back()) )
-        {
-            return -1;
-        }
-    }
-    if ( src != srcEnd )
-    {
-        msg("src != srcEnd");
-        return -1;
-    }
-
-
-    return 0;
-}
-
 static std::map<std::string, std::string> g_data;
 
 static void do_request(const std::vector<std::string> &cmd, Response &response)
@@ -251,7 +186,7 @@ static bool try_one_request(Conn * conn)
     const uint8_t * request = &conn->incoming[4];
 
     std::vector<std::string> cmd; //cmd exmaple: set [key] [value]
-    if ( parse_req(request, cmd, len) < 0 )
+    if ( Protocol::parse_request(request, cmd, len) < 0 )
     {
         msg("bad request");
         conn->want_close = true;
