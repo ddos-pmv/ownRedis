@@ -224,9 +224,6 @@ CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 //The directory containing a CMake configuration file for GTest.
 GTest_DIR:PATH=/opt/homebrew/lib/cmake/GTest
 
-//The directory containing a CMake configuration file for benchmark.
-benchmark_DIR:PATH=/opt/homebrew/lib/cmake/benchmark
-
 //The directory containing a CMake configuration file for boost_container.
 boost_container_DIR:PATH=/opt/homebrew/lib/cmake/boost_container-1.87.0
 
@@ -241,15 +238,6 @@ ownRedis_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 ownRedis_SOURCE_DIR:STATIC=/Users/sergejperlin/CLionProjects/ownRedis
-
-//Value Computed by CMake
-simple_example_BINARY_DIR:STATIC=/Users/sergejperlin/CLionProjects/ownRedis/cmake-build-debug
-
-//Value Computed by CMake
-simple_example_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-simple_example_SOURCE_DIR:STATIC=/Users/sergejperlin/CLionProjects/ownRedis
 
 
 ########################
@@ -397,8 +385,6 @@ CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 FIND_PACKAGE_MESSAGE_DETAILS_Boost:INTERNAL=[/opt/homebrew/lib/cmake/Boost-1.87.0/BoostConfig.cmake][cfound components: container ][v1.87.0()]
 //Details about finding GTest
 FIND_PACKAGE_MESSAGE_DETAILS_GTest:INTERNAL=[/opt/homebrew/lib/cmake/GTest/GTestConfig.cmake][c ][v1.16.0()]
-//Details about finding Threads
-FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: boost_container_DIR
 boost_container_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: boost_headers_DIR

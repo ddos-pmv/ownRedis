@@ -11,7 +11,10 @@ if (NOT Boost_FOUND)
 endif ()
 
 set(SERVER_FILES src/server.cpp
-        src/Protocol.cpp)
+        src/Protocol.cpp
+        src/hashtable.h
+        src/hashtable.cpp
+)
 add_executable(server ${SERVER_FILES})
 target_link_libraries(server Boost::boost)
 
