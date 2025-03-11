@@ -66,7 +66,7 @@ std::string TcpClient::error() const
 
 bool TcpClient::tcpWrite(const std::string &str)
 {
-    uint32_t sizeToWrite = str.size();
+    uint32_t sizeToWrite = str.length();
     if ( write(_fd, &sizeToWrite, 4) != 4 )
     {
         return false;
