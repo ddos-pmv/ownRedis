@@ -1,4 +1,4 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja -G Ninja -S /Users/sergejperlin/CLionProjects/ownRedis -B /Users/sergejperlin/CLionProjects/ownRedis/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" -S /Users/sergejperlin/CLionProjects/ownRedis -B /Users/sergejperlin/CLionProjects/ownRedis/cmake-build-debug
 -- The C compiler identification is AppleClang 15.0.0.15000309
 -- The CXX compiler identification is AppleClang 15.0.0.15000309
 -- Detecting C compiler ABI info
@@ -13,6 +13,6 @@
 -- Detecting CXX compile features - done
 -- Found GTest: /opt/homebrew/lib/cmake/GTest/GTestConfig.cmake (found version "1.16.0")
 -- Found Boost: /opt/homebrew/lib/cmake/Boost-1.87.0/BoostConfig.cmake (found version "1.87.0") found components: container
--- Configuring done (0.7s)
+-- Configuring done (0.9s)
 -- Generating done (0.0s)
 -- Build files have been written to: /Users/sergejperlin/CLionProjects/ownRedis/cmake-build-debug

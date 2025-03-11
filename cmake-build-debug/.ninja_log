@@ -1,10 +1,5 @@
 # ninja log v6
-2	68	1741109366828892594	CMakeFiles/server.dir/src/hashtable.cpp.o	ba3d89143ddc3e17
-2	396	1741109366828730506	CMakeFiles/server.dir/src/Protocol.cpp.o	e832fc60984204ab
-1	557	1741109366828419872	CMakeFiles/server.dir/src/server.cpp.o	bc3ecd1e44ef8c4f
-557	592	1741109367384256505	server	8c65278bdea4196d
-7	192	1741109986737483962	CMakeFiles/server.dir/src/hashtable.cpp.o	ba3d89143ddc3e17
-192	292	1741109986921785065	server	8c65278bdea4196d
 5	175	1741110368484549356	CMakeFiles/server.dir/src/hashtable.cpp.o	ba3d89143ddc3e17
+2	396	1741109366828730506	CMakeFiles/server.dir/src/Protocol.cpp.o	e832fc60984204ab
 5	641	1741110368484225100	CMakeFiles/server.dir/src/server.cpp.o	bc3ecd1e44ef8c4f
 641	742	1741110369120372808	server	8c65278bdea4196d
