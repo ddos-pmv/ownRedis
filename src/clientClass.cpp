@@ -8,13 +8,7 @@ int main()
 
     // if ( client.ping() )
     client.tcpWrite("hello");
-    std::string ans = client.tcpRead();
-    while ( !ans.empty() )
-    {
-        std::cout << ans.length() << '\n';
-        ans = client.tcpRead();
-    }
-    client.tcpWrite("adfadfadfaasdfadfafdasdfasd");
+    client.tcpWrite("hello2");
 
     std::cerr << client.error();
     return 0;

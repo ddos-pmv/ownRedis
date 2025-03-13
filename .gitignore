@@ -9,3 +9,6 @@
 ./.idea
 ./.DS_Stores
 ./tests
+./.DS_Store
+./build
+./.vscode
