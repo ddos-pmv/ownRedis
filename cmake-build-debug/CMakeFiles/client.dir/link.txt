@@ -1,1 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/c++ -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.6 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/client.dir/src/clientCopied.cpp.o CMakeFiles/client.dir/src/Protocol.cpp.o -o client

@@ -11,7 +11,7 @@ static void h_init(HTab *htab, size_t n) {
 
 static void h_insert(HTab *htab, HNode *hnode) {
   size_t pos = hnode->hcode & htab->mask;
-  HNode *  next = htab->tab[pos];
+  HNode *next = htab->tab[pos];
   hnode->next = next;
   htab->tab[pos] = hnode;
   htab->size++;
@@ -72,7 +72,7 @@ static void hm_trigger_rehashing(HMap *hmap) {
 
 HNode *hm_lookup(HMap *hmap, HNode *key, bool (*eq)(HNode *, HNode *)) {
   hm_help_rehashing(hmap);
-  
+
   HNode **from = h_lookup(&hmap->newer, key, eq);
 
   if (!from) {
@@ -121,3 +121,16 @@ void hm_clear(HMap *hmap) {
 }
 
 size_t hm_size(HMap *hmap) { return hmap->older.size + hmap->newer.size; }
+
+bool h_foreach(HTab *htab, bool (*f)(HNode *, void *), void *out) {
+  for (int i = 0; htab->mask != 0 && i <= htab->mask; i++) {
+    for (HNode *node = htab->tab[i]; node != nullptr; node = node->next) {
+      if (!f(node, out)) return false;
+    }
+  }
+  return true;
+}
+
+void hm_foreach(HMap *map, bool (*f)(HNode *, void *), void *arg) {
+  h_foreach(&map->newer, f, arg) && h_foreach(&map->older, f, arg);
+}

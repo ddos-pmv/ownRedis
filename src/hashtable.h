@@ -30,4 +30,6 @@ void hm_clear(HMap *map);
 
 size_t hm_size(HMap *map);
 
+void hm_foreach(HMap *map, bool (*f)(HNode *, void *), void *arg);
+
 #endif  // HASHTABLE_H

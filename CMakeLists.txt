@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)  # CMake version check
 project(ownRedis)               # Create project "simple_example"
-set(CMAKE_CXX_STANDARD 11)   # Enable c++14 standard
+set(CMAKE_CXX_STANDARD 20)   # Enable c++14 standard
 
 find_package(GTest REQUIRED)
 find_package(Boost REQUIRED COMPONENTS container)

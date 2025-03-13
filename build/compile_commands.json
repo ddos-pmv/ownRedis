@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/Users/sergejperlin/CLionProjects/ownRedis/build",
+  "command": "/usr/bin/clang++  -isystem /opt/homebrew/include -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.6 -o CMakeFiles/server.dir/src/server.cpp.o -c /Users/sergejperlin/CLionProjects/ownRedis/src/server.cpp",
+  "file": "/Users/sergejperlin/CLionProjects/ownRedis/src/server.cpp",
+  "output": "CMakeFiles/server.dir/src/server.cpp.o"
+},
+{
+  "directory": "/Users/sergejperlin/CLionProjects/ownRedis/build",
+  "command": "/usr/bin/clang++  -isystem /opt/homebrew/include -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.6 -o CMakeFiles/server.dir/src/Protocol.cpp.o -c /Users/sergejperlin/CLionProjects/ownRedis/src/Protocol.cpp",
+  "file": "/Users/sergejperlin/CLionProjects/ownRedis/src/Protocol.cpp",
+  "output": "CMakeFiles/server.dir/src/Protocol.cpp.o"
+},
+{
+  "directory": "/Users/sergejperlin/CLionProjects/ownRedis/build",
+  "command": "/usr/bin/clang++  -isystem /opt/homebrew/include -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.6 -o CMakeFiles/server.dir/src/hashtable.cpp.o -c /Users/sergejperlin/CLionProjects/ownRedis/src/hashtable.cpp",
+  "file": "/Users/sergejperlin/CLionProjects/ownRedis/src/hashtable.cpp",
+  "output": "CMakeFiles/server.dir/src/hashtable.cpp.o"
+},
+{
+  "directory": "/Users/sergejperlin/CLionProjects/ownRedis/build",
+  "command": "/usr/bin/clang++   -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.6 -o CMakeFiles/client.dir/src/clientCopied.cpp.o -c /Users/sergejperlin/CLionProjects/ownRedis/src/clientCopied.cpp",
+  "file": "/Users/sergejperlin/CLionProjects/ownRedis/src/clientCopied.cpp",
+  "output": "CMakeFiles/client.dir/src/clientCopied.cpp.o"
+},
+{
+  "directory": "/Users/sergejperlin/CLionProjects/ownRedis/build",
+  "command": "/usr/bin/clang++   -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.6 -o CMakeFiles/client.dir/src/Protocol.cpp.o -c /Users/sergejperlin/CLionProjects/ownRedis/src/Protocol.cpp",
+  "file": "/Users/sergejperlin/CLionProjects/ownRedis/src/Protocol.cpp",
+  "output": "CMakeFiles/client.dir/src/Protocol.cpp.o"
+}
+]
