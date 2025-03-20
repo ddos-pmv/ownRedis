@@ -174,7 +174,7 @@ static struct {
 } g_data;
 
 struct Entry {
-  struct HNode node;
+  HNode node;
   std::string key;
   std::string value;
 };
