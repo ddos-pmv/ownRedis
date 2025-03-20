@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /Users/sergejperlin/CLionProjects/ownRedis/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/opt/homebrew/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
@@ -142,13 +152,38 @@ client/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
 .PHONY : client/fast
 
+#=============================================================================
+# Target rules for targets named AVLTree
+
+# Build rule for target.
+AVLTree: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AVLTree
+.PHONY : AVLTree
+
+# fast build rule for target.
+AVLTree/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AVLTree.dir/build.make CMakeFiles/AVLTree.dir/build
+.PHONY : AVLTree/fast
+
+#=============================================================================
+# Target rules for targets named tests
+
+# Build rule for target.
+tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests
+.PHONY : tests
+
+# fast build rule for target.
+tests/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/tests.dir/build.make tests/CMakeFiles/tests.dir/build
+.PHONY : tests/fast
+
 src/Protocol.o: src/Protocol.cpp.o
 .PHONY : src/Protocol.o
 
 # target to build an object file
 src/Protocol.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Protocol.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/Protocol.cpp.o
 .PHONY : src/Protocol.cpp.o
 
 src/Protocol.i: src/Protocol.cpp.i
@@ -157,7 +192,6 @@ src/Protocol.i: src/Protocol.cpp.i
 # target to preprocess a source file
 src/Protocol.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Protocol.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/Protocol.cpp.i
 .PHONY : src/Protocol.cpp.i
 
 src/Protocol.s: src/Protocol.cpp.s
@@ -166,32 +200,55 @@ src/Protocol.s: src/Protocol.cpp.s
 # target to generate assembly for a file
 src/Protocol.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Protocol.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/Protocol.cpp.s
 .PHONY : src/Protocol.cpp.s
 
-src/clientCopied.o: src/clientCopied.cpp.o
-.PHONY : src/clientCopied.o
+src/avl.o: src/avl.cpp.o
+.PHONY : src/avl.o
 
 # target to build an object file
-src/clientCopied.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/clientCopied.cpp.o
-.PHONY : src/clientCopied.cpp.o
+src/avl.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AVLTree.dir/build.make CMakeFiles/AVLTree.dir/src/avl.cpp.o
+.PHONY : src/avl.cpp.o
 
-src/clientCopied.i: src/clientCopied.cpp.i
-.PHONY : src/clientCopied.i
+src/avl.i: src/avl.cpp.i
+.PHONY : src/avl.i
 
 # target to preprocess a source file
-src/clientCopied.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/clientCopied.cpp.i
-.PHONY : src/clientCopied.cpp.i
+src/avl.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AVLTree.dir/build.make CMakeFiles/AVLTree.dir/src/avl.cpp.i
+.PHONY : src/avl.cpp.i
 
-src/clientCopied.s: src/clientCopied.cpp.s
-.PHONY : src/clientCopied.s
+src/avl.s: src/avl.cpp.s
+.PHONY : src/avl.s
 
 # target to generate assembly for a file
-src/clientCopied.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/clientCopied.cpp.s
-.PHONY : src/clientCopied.cpp.s
+src/avl.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AVLTree.dir/build.make CMakeFiles/AVLTree.dir/src/avl.cpp.s
+.PHONY : src/avl.cpp.s
+
+src/client.o: src/client.cpp.o
+.PHONY : src/client.o
+
+# target to build an object file
+src/client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/client.cpp.o
+.PHONY : src/client.cpp.o
+
+src/client.i: src/client.cpp.i
+.PHONY : src/client.i
+
+# target to preprocess a source file
+src/client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/client.cpp.i
+.PHONY : src/client.cpp.i
+
+src/client.s: src/client.cpp.s
+.PHONY : src/client.s
+
+# target to generate assembly for a file
+src/client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/client.cpp.s
+.PHONY : src/client.cpp.s
 
 src/hashtable.o: src/hashtable.cpp.o
 .PHONY : src/hashtable.o
@@ -199,6 +256,7 @@ src/hashtable.o: src/hashtable.cpp.o
 # target to build an object file
 src/hashtable.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/hashtable.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/hashtable.cpp.o
 .PHONY : src/hashtable.cpp.o
 
 src/hashtable.i: src/hashtable.cpp.i
@@ -207,6 +265,7 @@ src/hashtable.i: src/hashtable.cpp.i
 # target to preprocess a source file
 src/hashtable.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/hashtable.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/hashtable.cpp.i
 .PHONY : src/hashtable.cpp.i
 
 src/hashtable.s: src/hashtable.cpp.s
@@ -215,6 +274,7 @@ src/hashtable.s: src/hashtable.cpp.s
 # target to generate assembly for a file
 src/hashtable.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/hashtable.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/hashtable.cpp.s
 .PHONY : src/hashtable.cpp.s
 
 src/server.o: src/server.cpp.o
@@ -249,14 +309,20 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
+	@echo "... AVLTree"
 	@echo "... client"
 	@echo "... server"
+	@echo "... tests"
 	@echo "... src/Protocol.o"
 	@echo "... src/Protocol.i"
 	@echo "... src/Protocol.s"
-	@echo "... src/clientCopied.o"
-	@echo "... src/clientCopied.i"
-	@echo "... src/clientCopied.s"
+	@echo "... src/avl.o"
+	@echo "... src/avl.i"
+	@echo "... src/avl.s"
+	@echo "... src/client.o"
+	@echo "... src/client.i"
+	@echo "... src/client.s"
 	@echo "... src/hashtable.o"
 	@echo "... src/hashtable.i"
 	@echo "... src/hashtable.s"

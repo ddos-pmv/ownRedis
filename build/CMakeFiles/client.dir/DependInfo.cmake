@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/sergejperlin/CLionProjects/ownRedis/src/Protocol.cpp" "CMakeFiles/client.dir/src/Protocol.cpp.o" "gcc" "CMakeFiles/client.dir/src/Protocol.cpp.o.d"
-  "/Users/sergejperlin/CLionProjects/ownRedis/src/clientCopied.cpp" "CMakeFiles/client.dir/src/clientCopied.cpp.o" "gcc" "CMakeFiles/client.dir/src/clientCopied.cpp.o.d"
+  "/Users/sergejperlin/CLionProjects/ownRedis/src/client.cpp" "CMakeFiles/client.dir/src/client.cpp.o" "gcc" "CMakeFiles/client.dir/src/client.cpp.o.d"
+  "/Users/sergejperlin/CLionProjects/ownRedis/src/hashtable.cpp" "CMakeFiles/client.dir/src/hashtable.cpp.o" "gcc" "CMakeFiles/client.dir/src/hashtable.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

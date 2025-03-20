@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20250320-1307-Experimental"
+	Name="(empty)"
+	Generator="ctest-3.31.5"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="macOS"
+	Hostname="MacBook-Pro-Sergej.local"
+	OSRelease="14.6.1"
+	OSVersion="23G93"
+	OSPlatform="arm64"
+	Is64Bits="1"
+	VendorString="Apple"
+	VendorID="Apple"
+	FamilyID="0"
+	ModelID="0"
+	ModelName="Apple M1 Pro"
+	ProcessorCacheSize="131072"
+	NumberOfLogicalCPU="8"
+	NumberOfPhysicalCPU="8"
+	TotalVirtualMemory="1024"
+	TotalPhysicalMemory="16384"
+	LogicalProcessorsPerPhysical="8"
+	ProcessorClockFrequency="0"
+	>
+	<Testing>
+		<StartDateTime>Mar 20 19:48 MSK</StartDateTime>
+		<StartTestTime>1742489332</StartTestTime>
+		<TestList>
+			<Test>./tests/AVLTreeTest</Test>
+		</TestList>
+		<Test Status="passed">
+			<Name>AVLTreeTest</Name>
+			<Path>./tests</Path>
+			<FullName>./tests/AVLTreeTest</FullName>
+			<FullCommandLine>/Users/sergejperlin/CLionProjects/ownRedis/build/tests/tests</FullCommandLine>
+			<Results>
+				<NamedMeasurement type="numeric/double" name="Execution Time">
+					<Value>0.0500127</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="numeric/double" name="Processors">
+					<Value>1</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Completion Status">
+					<Value>Completed</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Command Line">
+					<Value>/Users/sergejperlin/CLionProjects/ownRedis/build/tests/tests</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Environment">
+					<Value>#CTEST_RESOURCE_GROUP_COUNT=</Value>
+				</NamedMeasurement>
+				<Measurement>
+					<Value encoding="base64" compression="gzip">eJyNkrFuwjAQhnc/xY1hSFREBpYOSKlQBS0oabNEGdxyRZacM7LP8Po1hEZpJAL/Zvu7zz7b1XOXGnJPpGgPKTA6dvBjTQPTywCcV4yJqOIuNSy1+ZK6XUc6KmuoQQoscuwPA/ifdFGuPyyiqCD/fIdL6r/J5JUcWi7CSTSWUvsz1mazGsMgeoLGTcakb14rVodrgRsTD1CIpvfkmQ/0t+QH5AMUotlteY6NOY46+0RQzVvXvcuHKE0DCWxY6ol47GkZpY135kSi6v+cmz8GrKRksFPoYbsoipfs3OW1MhG/BorGCg==</Value>
+				</Measurement>
+			</Results>
+		</Test>
+		<EndDateTime>Mar 20 19:48 MSK</EndDateTime>
+		<EndTestTime>1742489332</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

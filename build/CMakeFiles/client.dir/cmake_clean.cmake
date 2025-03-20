@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/client.dir/src/Protocol.cpp.o"
-  "CMakeFiles/client.dir/src/Protocol.cpp.o.d"
-  "CMakeFiles/client.dir/src/clientCopied.cpp.o"
-  "CMakeFiles/client.dir/src/clientCopied.cpp.o.d"
+  "CMakeFiles/client.dir/src/client.cpp.o"
+  "CMakeFiles/client.dir/src/client.cpp.o.d"
+  "CMakeFiles/client.dir/src/hashtable.cpp.o"
+  "CMakeFiles/client.dir/src/hashtable.cpp.o.d"
   "client"
   "client.pdb"
 )

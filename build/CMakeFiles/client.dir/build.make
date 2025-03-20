@@ -72,44 +72,44 @@ include CMakeFiles/client.dir/flags.make
 CMakeFiles/client.dir/codegen:
 .PHONY : CMakeFiles/client.dir/codegen
 
-CMakeFiles/client.dir/src/clientCopied.cpp.o: CMakeFiles/client.dir/flags.make
-CMakeFiles/client.dir/src/clientCopied.cpp.o: /Users/sergejperlin/CLionProjects/ownRedis/src/clientCopied.cpp
-CMakeFiles/client.dir/src/clientCopied.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/sergejperlin/CLionProjects/ownRedis/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/client.dir/src/clientCopied.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/src/clientCopied.cpp.o -MF CMakeFiles/client.dir/src/clientCopied.cpp.o.d -o CMakeFiles/client.dir/src/clientCopied.cpp.o -c /Users/sergejperlin/CLionProjects/ownRedis/src/clientCopied.cpp
+CMakeFiles/client.dir/src/client.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/src/client.cpp.o: /Users/sergejperlin/CLionProjects/ownRedis/src/client.cpp
+CMakeFiles/client.dir/src/client.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/sergejperlin/CLionProjects/ownRedis/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/client.dir/src/client.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/src/client.cpp.o -MF CMakeFiles/client.dir/src/client.cpp.o.d -o CMakeFiles/client.dir/src/client.cpp.o -c /Users/sergejperlin/CLionProjects/ownRedis/src/client.cpp
 
-CMakeFiles/client.dir/src/clientCopied.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/src/clientCopied.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/sergejperlin/CLionProjects/ownRedis/src/clientCopied.cpp > CMakeFiles/client.dir/src/clientCopied.cpp.i
+CMakeFiles/client.dir/src/client.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/src/client.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/sergejperlin/CLionProjects/ownRedis/src/client.cpp > CMakeFiles/client.dir/src/client.cpp.i
 
-CMakeFiles/client.dir/src/clientCopied.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/src/clientCopied.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/sergejperlin/CLionProjects/ownRedis/src/clientCopied.cpp -o CMakeFiles/client.dir/src/clientCopied.cpp.s
+CMakeFiles/client.dir/src/client.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/src/client.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/sergejperlin/CLionProjects/ownRedis/src/client.cpp -o CMakeFiles/client.dir/src/client.cpp.s
 
-CMakeFiles/client.dir/src/Protocol.cpp.o: CMakeFiles/client.dir/flags.make
-CMakeFiles/client.dir/src/Protocol.cpp.o: /Users/sergejperlin/CLionProjects/ownRedis/src/Protocol.cpp
-CMakeFiles/client.dir/src/Protocol.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/sergejperlin/CLionProjects/ownRedis/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/client.dir/src/Protocol.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/src/Protocol.cpp.o -MF CMakeFiles/client.dir/src/Protocol.cpp.o.d -o CMakeFiles/client.dir/src/Protocol.cpp.o -c /Users/sergejperlin/CLionProjects/ownRedis/src/Protocol.cpp
+CMakeFiles/client.dir/src/hashtable.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/src/hashtable.cpp.o: /Users/sergejperlin/CLionProjects/ownRedis/src/hashtable.cpp
+CMakeFiles/client.dir/src/hashtable.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/sergejperlin/CLionProjects/ownRedis/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/client.dir/src/hashtable.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/src/hashtable.cpp.o -MF CMakeFiles/client.dir/src/hashtable.cpp.o.d -o CMakeFiles/client.dir/src/hashtable.cpp.o -c /Users/sergejperlin/CLionProjects/ownRedis/src/hashtable.cpp
 
-CMakeFiles/client.dir/src/Protocol.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/src/Protocol.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/sergejperlin/CLionProjects/ownRedis/src/Protocol.cpp > CMakeFiles/client.dir/src/Protocol.cpp.i
+CMakeFiles/client.dir/src/hashtable.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/client.dir/src/hashtable.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/sergejperlin/CLionProjects/ownRedis/src/hashtable.cpp > CMakeFiles/client.dir/src/hashtable.cpp.i
 
-CMakeFiles/client.dir/src/Protocol.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/src/Protocol.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/sergejperlin/CLionProjects/ownRedis/src/Protocol.cpp -o CMakeFiles/client.dir/src/Protocol.cpp.s
+CMakeFiles/client.dir/src/hashtable.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/client.dir/src/hashtable.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/sergejperlin/CLionProjects/ownRedis/src/hashtable.cpp -o CMakeFiles/client.dir/src/hashtable.cpp.s
 
 # Object files for target client
 client_OBJECTS = \
-"CMakeFiles/client.dir/src/clientCopied.cpp.o" \
-"CMakeFiles/client.dir/src/Protocol.cpp.o"
+"CMakeFiles/client.dir/src/client.cpp.o" \
+"CMakeFiles/client.dir/src/hashtable.cpp.o"
 
 # External object files for target client
 client_EXTERNAL_OBJECTS =
 
-client: CMakeFiles/client.dir/src/clientCopied.cpp.o
-client: CMakeFiles/client.dir/src/Protocol.cpp.o
+client: CMakeFiles/client.dir/src/client.cpp.o
+client: CMakeFiles/client.dir/src/hashtable.cpp.o
 client: CMakeFiles/client.dir/build.make
 client: CMakeFiles/client.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/sergejperlin/CLionProjects/ownRedis/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable client"
