@@ -1,2 +1,0 @@
-/usr/bin/ar qc libAVLTree.a CMakeFiles/AVLTree.dir/src/avl.cpp.o
-/usr/bin/ranlib libAVLTree.a

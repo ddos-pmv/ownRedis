@@ -1,1 +1,0 @@
-/usr/bin/clang++ -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.6 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/avlTest.dir/src/avl.cpp.o CMakeFiles/avlTest.dir/src/avl_test.cpp.o -o avlTest  /opt/homebrew/lib/libgtest.a /opt/homebrew/lib/libgtest_main.a /opt/homebrew/lib/libgtest.a
