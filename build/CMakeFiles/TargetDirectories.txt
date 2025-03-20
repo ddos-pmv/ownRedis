@@ -1,4 +1,0 @@
-/Users/sergejperlin/CLionProjects/ownRedis/build/CMakeFiles/server.dir
-/Users/sergejperlin/CLionProjects/ownRedis/build/CMakeFiles/client.dir
-/Users/sergejperlin/CLionProjects/ownRedis/build/CMakeFiles/edit_cache.dir
-/Users/sergejperlin/CLionProjects/ownRedis/build/CMakeFiles/rebuild_cache.dir
