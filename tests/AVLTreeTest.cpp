@@ -119,24 +119,21 @@ TEST(AVLTree, InsertSingleValue) {
   dispose(c);
 }
 
-TEST(AVLTree, InsertMulitipleValues)
-{
+TEST(AVLTree, InsertMulitipleValues) {
   Container c;
   std::multiset<uint32_t> ref;
 
-  for (int i = 0; i < 100; i ++)
-  {
+  for (int i = 0; i < 100; i++) {
     add(c, i);
-    ref.insert( i );
+    ref.insert(i);
     container_verify(c, ref);
   }
 
   dispose(c);
-  container_verify( c, {} );
-e}
+  container_verify(c, {});
+}
 
-TEST(AVLTree, InsertDuplecateValues)
-{
+TEST(AVLTree, InsertDuplecateValues) {
   Container c;
   std::multiset<uint32_t> ref;
   for (int val = 0; val < 20; val++) {
@@ -155,8 +152,7 @@ TEST(AVLTree, InsertDuplecateValues)
   }
 }
 
-TEST(AVLTree, RemoveValues)
-{
+TEST(AVLTree, RemoveValues) {
   for (int val = 0; val < 200; val++) {
     Container c;
     std::multiset<uint32_t> ref;
@@ -175,7 +171,6 @@ TEST(AVLTree, RemoveValues)
 }
 
 int main() {
-
   ::testing::InitGoogleTest();
 
   return RUN_ALL_TESTS();

@@ -45,6 +45,9 @@ add_executable(client ${CLIENT_SOURCES}  ${HASHTABLE_SOURCES})
 # Cборка AVL дерева
 add_library(AVLTree src/avl.h src/avl.cpp)
 
+# Сборка HMap
+add_library(HMap ${HASHTABLE_SOURCES})
+
 add_subdirectory(tests)
 
 message(STATUS "Project" ${PROJECT_NAME} "configured successfully")
