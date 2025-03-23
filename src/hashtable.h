@@ -4,8 +4,8 @@
 #include <unistd.h>
 
 struct HNode {
-  HNode *next = nullptr;
   uint64_t hcode = 0;
+  HNode *next = nullptr;
 };
 
 struct HTab {

@@ -46,7 +46,7 @@ static void hm_help_rehashing(HMap *hmap) {
   size_t nwork = 0;
   while (nwork < k_reheshing_work && hmap->older.size > 0) {
     HNode **from = &hmap->older.tab[hmap->migrate_pos];
-    if (!from) {
+    if (!*from) {
       hmap->migrate_pos++;
       continue;
     }
