@@ -1,10 +1,5 @@
-./CMakeLists.txt
-./server
-./client
-./client.dSYM
-./server.dSYM
-cmake-build-debug
-cmake-build-relise
+cmake-build-debug/
+cmake-build-relise/
 client.dSYM
 server.dSYM
 .DS_Stores

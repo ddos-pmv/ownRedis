@@ -15,12 +15,12 @@
 #include <map>
 #include <unordered_map>
 // boost
+#include <hashtable.h>
+#include <utils.h>
+
 #include <boost/container/devector.hpp>
 
 #include "Protocol.h"
-#include "hashtable.h"
-
-#define container_of(ptr, T, member) ((T *)((char *)ptr - offsetof(T, member)))
 
 const size_t k_max_msg = 32 << 20;
 const size_t k_max_args = 200 * 1000;
@@ -183,15 +183,6 @@ static bool entry_eq(HNode *lhs, HNode *rhs) {
   Entry *le = container_of(lhs, Entry, node);
   Entry *re = container_of(rhs, Entry, node);
   return le->key == re->key;
-}
-
-// FNV hash
-static uint64_t str_hash(const uint8_t *data, size_t len) {
-  uint32_t h = 0x811c9dc5;
-  for (int i = 0; i < len; i++) {
-    h = (h + data[i]) * 0x01000193;
-  }
-  return h;
 }
 
 static void response_begin(Buffer &buf, size_t *header) {

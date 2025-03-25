@@ -5,9 +5,9 @@
 #include <iostream>
 #include <set>
 
-#include "avl.h"
+#include <avl.h>
+#include <utils.h>
 
-#define container_of(ptr, T, member) ((T *)((char *)ptr - offsetof(T, member)))
 struct Data {
   AVLNode node;
   uint32_t val = 0;
