@@ -24,7 +24,6 @@ static HNode **h_lookup(HTab *htab, HNode *key, bool (*eq)(HNode *, HNode *)) {
   HNode **from = &htab->tab[pos];
   for (HNode *cur; (cur = *from) != nullptr; from = &cur->next) {
     bool firstCond = cur->hcode == key->hcode;
-    bool second = eq(cur, key);
     if (cur->hcode == key->hcode && eq(cur, key)) {
       return from;
     }

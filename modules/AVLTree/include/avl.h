@@ -26,5 +26,6 @@ inline uint32_t avl_cnt(AVLNode* node) { return node ? node->cnt : 0; }
 
 AVLNode* avl_fix(AVLNode*);
 AVLNode* avl_del(AVLNode*);
+AVLNode* avl_offset(AVLNode*, int64_t);
 
 #endif

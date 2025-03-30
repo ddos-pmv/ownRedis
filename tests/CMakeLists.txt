@@ -18,4 +18,12 @@ add_executable(hmapTest ${HMAP_TESTS_SOURCES})
 target_link_libraries(hmapTest PRIVATE HMap GTest::GTest Utils)
 add_test(NAME HMapTest COMMAND hmapTest)
 
+set(ZSET_TESTS_SOURCES
+    ZSetTest.cpp
+)
+
+add_executable(zsetTest ${ZSET_TESTS_SOURCES})
+target_link_libraries(zsetTest PRIVATE GTest::GTest Utils ZSet)
+add_test(NAME ZSetTest COMMAND zsetTest)
+
 

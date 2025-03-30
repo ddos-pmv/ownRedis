@@ -1,5 +1,9 @@
-#include "avl.h"
-#include "hashtable.h"
+#pragma once
+
+#include <avl.h>
+#include <hashtable.h>
+
+#include <iostream>
 
 struct ZSet {
   AVLNode* root = nullptr;
@@ -8,7 +12,7 @@ struct ZSet {
 
 struct ZNode {
   AVLNode tree;
-  HMap hmap;
+  HNode hmap;
   double score;
   size_t len;
   char name[0];
@@ -20,8 +24,8 @@ struct ZNode {
 };
 
 bool zset_insert(ZSet* set, const char* name, size_t len, double score);
-ZNode* zset_lookup(ZSet* set, const char* name, size_t len, double score);
-void zset_delte(ZSet* set, ZNode* node);
-ZNode* zset_gseek(ZSet* set, const char* name, size_t len);
+ZNode* zset_lookup(ZSet* set, const char* name, size_t len);
+void zset_delete(ZSet* set, ZNode* node);
+ZNode* zset_seekge(ZSet* set, double score, const char* name, size_t len);
 ZNode* zset_offset(ZNode* node, int64_t offset);
 void zset_clear(ZSet* set);
