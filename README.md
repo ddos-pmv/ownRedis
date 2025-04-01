@@ -28,12 +28,12 @@ cmake --build . --target server client
 ### Запуск сервера
 
 ```bash
-./build/apps/server/ownredis\_server
+./build/apps/server/ownredis/server
 ```
 ### Запуск клиента
 
 ```bash
-./build/apps/client/ownredis\_client <команда\> \[аргументы...\]
+./build/apps/client/ownredis/client <команда\> \[аргументы...\]
 ```
 
 📂 Структура проекта
