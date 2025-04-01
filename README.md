@@ -22,7 +22,7 @@ OwnRedis - это высокопроизводительная in-memory баз�
 git clone <репозиторий\>
 mkdir build && cd build
 cmake ..
-make
+cmake --build . --target server client
 ```
 
 ### Запуск сервера
