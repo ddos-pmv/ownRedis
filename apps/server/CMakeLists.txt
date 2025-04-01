@@ -10,4 +10,4 @@ target_include_directories(server PRIVATE
         # Добавьте другие пути к заголовкам, если нужно
 )
 
-target_link_libraries(server PRIVATE Utils HMap Boost::boost)
+target_link_libraries(server PRIVATE Utils ZSet HMap Boost::boost)

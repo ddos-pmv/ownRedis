@@ -1,6 +1,8 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
+#pragma once
+
 #include <unistd.h>
 
 struct HNode {
