@@ -1,13 +1,12 @@
+#include <avl.h>
 #include <gtest/gtest.h>
+#include <utils.h>
 
 #include <cassert>
 #include <cstddef>
 #include <iostream>
 #include <set>
 
-#include "avl.h"
-
-#define container_of(ptr, T, member) ((T *)((char *)ptr - offsetof(T, member)))
 struct Data {
   AVLNode node;
   uint32_t val = 0;
@@ -168,6 +167,38 @@ TEST(AVLTree, RemoveValues) {
 
     dispose(c);
   }
+}
+
+TEST(AVLTree, TestOffsetFromMin) {
+  int sz = 200;
+
+  Container c;
+  for (int i = 0; i < sz; i++) {
+    add(c, i);
+  }
+
+  AVLNode *min = c.root;
+  while (min->left) {
+    min = min->left;
+  }
+
+  for (int i = 0; i < sz; i++) {
+    AVLNode *node = avl_offset(min, i);
+    // ASSERT_NE(node, nullptr);
+    ASSERT_EQ(container_of(node, Data, node)->val, i);
+
+    for (int j = 0; j < sz; j++) {
+      int64_t offset = j - i;
+      AVLNode *node2 = avl_offset(node, offset);
+      // ASSERT_NE( node2, null)
+      ASSERT_EQ(container_of(node2, Data, node)->val, j);
+    }
+
+    ASSERT_EQ(avl_offset(node, sz - i), nullptr);
+    ASSERT_EQ(avl_offset(node, -(i + 1)), nullptr);
+  }
+
+  dispose(c);
 }
 
 int main() {

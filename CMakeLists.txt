@@ -13,40 +13,15 @@ if (NOT Boost_FOUND)
     message(FATAL_ERROR "Boost not found!")
 endif ()
 
-enable_testing()
 
-set(SERVER_SOURCES
-        src/server.cpp
-        src/Protocol.cpp
-        
-)
 
-set(CLIENT_SOURCES
-        src/client.cpp
-)
+add_subdirectory(modules/AVLTree)
+add_subdirectory(modules/HMap)
+add_subdirectory(modules/ZSet)
+add_subdirectory(modules/Utils)
 
-set(HASHTABLE_SOURCES
-        src/hashtable.cpp
-        src/hashtable.h
-)
-
-set(AVLTREE_SOURCES
-        src/avl.h
-        src/avl.cpp
-)
-
-# Сборка сервера
-add_executable(server ${SERVER_SOURCES} ${HASHTABLE_SOURCES})
-target_link_libraries(server PRIVATE Boost::boost)
-
-# Сборка клиента
-add_executable(client ${CLIENT_SOURCES}  ${HASHTABLE_SOURCES})
-
-# Cборка AVL дерева
-add_library(AVLTree src/avl.h src/avl.cpp)
-
-# Сборка HMap
-add_library(HMap ${HASHTABLE_SOURCES})
+add_subdirectory(apps/server)
+add_subdirectory(apps/client)
 
 add_subdirectory(tests)
 
