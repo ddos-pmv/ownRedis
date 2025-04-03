@@ -19,6 +19,7 @@ add_subdirectory(modules/AVLTree)
 add_subdirectory(modules/HMap)
 add_subdirectory(modules/ZSet)
 add_subdirectory(modules/Utils)
+add_subdirectory(modules/Proto)
 
 add_subdirectory(apps/server)
 add_subdirectory(apps/client)

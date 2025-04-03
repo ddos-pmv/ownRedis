@@ -5,6 +5,9 @@
 #include "hashtable.h"
 #include "utils.h"
 
+using HMap = ownredis::HMap;
+using HNode = ownredis::HNode;
+
 static struct {
   HMap db;
 } g_data;
@@ -24,7 +27,9 @@ static bool entry_eq(HNode *lhs, HNode *rhs) {
 TEST(HMapTest, insertAndLookup) {
   HMap map;
   std::unordered_map<std::string, std::string> ref;
-  for (int i = 1000; i < 30000; i++) {
+  int sz = 300000;
+
+  for (int i = 1000; i < sz; i++) {
     std::string key = std::to_string(i);
     Entry *ent = new Entry{
         .node{.hcode = str_hash((const uint8_t *)key.data(), key.size())},
@@ -37,7 +42,7 @@ TEST(HMapTest, insertAndLookup) {
     }
   }
 
-  for (int i = 1000; i < 30000; i++) {
+  for (int i = 1000; i < sz; i++) {
     Entry key;
     key.key = std::to_string(i);
     key.node.hcode = str_hash((const uint8_t *)key.key.data(), key.key.size());
@@ -91,11 +96,12 @@ TEST(HMapTest, Delete) {
 }
 
 TEST(stdHMapTest, insertAndLookup) {
+  int sz = 300000;
   std::unordered_map<std::string, std::string> ref;
-  for (int i = 1000; i < 30000; i++) {
+  for (int i = 1000; i < sz; i++) {
     ref[std::to_string(i)] = std::to_string(i * 2);
   }
-  for (int i = 1000; i < 30000; i++) {
+  for (int i = 1000; i < sz; i++) {
     ASSERT_EQ(ref[std::to_string(i)], std::to_string(i * 2));
   }
 }

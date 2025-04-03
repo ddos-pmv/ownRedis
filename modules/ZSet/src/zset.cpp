@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+namespace ownredis {
+
 static ZNode* znode_new(const char* name, size_t len, double score) {
   ZNode* node = new (len) ZNode;
   assert(node);
@@ -156,3 +158,5 @@ void zset_clear(ZSet* zset) {
 
   zset->root = nullptr;
 }
+
+}  // namespace ownredis

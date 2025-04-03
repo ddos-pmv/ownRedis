@@ -3,7 +3,7 @@
 #include <avl.h>
 #include <hashtable.h>
 
-#include <iostream>
+namespace ownredis {
 
 struct ZSet {
   AVLNode* root = nullptr;
@@ -29,3 +29,5 @@ void zset_delete(ZSet* set, ZNode* node);
 ZNode* zset_seekge(ZSet* set, double score, const char* name, size_t len);
 ZNode* zset_offset(ZNode* node, int64_t offset);
 void zset_clear(ZSet* set);
+
+}  // namespace ownredis

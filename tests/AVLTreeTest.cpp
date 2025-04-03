@@ -7,6 +7,7 @@
 #include <iostream>
 #include <set>
 
+using AVLNode = ownredis::AVLNode;
 struct Data {
   AVLNode node;
   uint32_t val = 0;

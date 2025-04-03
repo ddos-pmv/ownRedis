@@ -1,11 +1,10 @@
 #pragma once
 
-#ifndef AVL_H
-#define AVL_H
-
 #include <stdint.h>
 
 #include <cassert>
+
+namespace ownredis {
 
 struct AVLNode {
   AVLNode* left = nullptr;
@@ -28,4 +27,4 @@ AVLNode* avl_fix(AVLNode*);
 AVLNode* avl_del(AVLNode*);
 AVLNode* avl_offset(AVLNode*, int64_t);
 
-#endif
+}  // namespace ownredis

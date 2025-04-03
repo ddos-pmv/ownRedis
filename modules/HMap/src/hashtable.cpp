@@ -1,7 +1,7 @@
 #include "hashtable.h"
 
 #include <cassert>
-
+namespace ownredis {
 static void h_init(HTab *htab, size_t n) {
   assert(n > 0 && ((n & (n - 1)) == 0));  // n - power of 2
   htab->tab = (HNode **)calloc(n, sizeof(HNode *));
@@ -133,3 +133,4 @@ bool h_foreach(HTab *htab, bool (*f)(HNode *, void *), void *out) {
 void hm_foreach(HMap *map, bool (*f)(HNode *, void *), void *arg) {
   h_foreach(&map->newer, f, arg) && h_foreach(&map->older, f, arg);
 }
+}  // namespace ownredis

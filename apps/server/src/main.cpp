@@ -6,11 +6,14 @@
 #include <sys/socket.h>
 #include <unistd.h>
 // My libs
+#include <Proto/buf_utils.h>
+#include <Proto/out_utils.h>
+#include <Proto/types.h>
 #include <hashtable.h>
 #include <utils.h>
 #include <zset.h>
 
-#include <boost/container/devector.hpp>
+// #include <boost/container/devector.hpp>
 // C/C++
 #include <cassert>
 #include <cerrno>
@@ -21,6 +24,12 @@
 #include <unordered_map>
 
 #include "Protocol.h"
+
+using ZSet = ownredis::ZSet;
+using Buffer = ownredis::Buffer;
+using ZNode = ownredis::ZNode;
+using HNode = ownredis::HNode;
+using HMap = ownredis::HMap;
 
 const size_t k_max_msg = 32 << 20;
 const size_t k_max_args = 200 * 1000;
@@ -52,28 +61,11 @@ static void fd_set_nb(int fd) {
   }
 }
 
-using Buffer = boost::container::devector<uint8_t>;
-
-enum {
-  TAG_NIL = 0,
-  TAG_ERR = 1,
-  TAG_STR = 2,
-  TAG_INT = 3,
-  TAG_DBL = 4,
-  TAG_ARR = 5
-};
-
-enum { ERR_UNKNOWN = 0, ERR_TOO_BIG = 1, ERR_BAD_TYPE = 2, ERR_BAD_ARG = 3 };
-
 struct Response {
   uint32_t status = 0;
   Buffer data;
 };
 
-// incoming/outgoing buffer example
-// +------+------+------+------+------+
-// | nstr | len1 | str1 | len2 | str2 |
-// +------+------+------+------+------+
 struct Conn {
   int fd = -1;
 
@@ -111,73 +103,6 @@ static std::unique_ptr<Conn> handle_accept(int fd) {
   conn->want_read = true;
 
   return conn;
-}
-
-static void buf_append(Buffer &buf, const uint8_t *data, size_t len) {
-  buf.insert(buf.end(), data, data + len);
-}
-
-static void buf_append_u8(Buffer &buf, const uint8_t data) {
-  buf.push_back(data);
-}
-
-static void buf_append_u32(Buffer &buf, const uint32_t data) {
-  buf.insert(buf.end(), reinterpret_cast<const uint8_t *>(&data),
-             reinterpret_cast<const uint8_t *>(&data) + 4);
-}
-
-static void buf_append_i64(Buffer &buf, const int64_t data) {
-  buf.insert(buf.end(), reinterpret_cast<const uint8_t *>(&data),
-             reinterpret_cast<const uint8_t *>(&data) + 8);
-}
-
-static void buf_append_dbl(Buffer &buf, double data) {
-  buf_append(buf, (const uint8_t *)&data, 8);
-}
-
-static void buf_consume(Buffer &buf, size_t n) {
-  buf.erase(buf.begin(), buf.begin() + n);
-}
-
-static void out_nil(Buffer &buf) { buf_append_u8(buf, TAG_NIL); }
-
-static void out_str(Buffer &out, const char *s, size_t len) {
-  buf_append_u8(out, TAG_STR);
-  buf_append_u32(out, static_cast<uint32_t>(len));
-  buf_append(out, reinterpret_cast<const uint8_t *>(s), len);
-}
-
-static void out_int(Buffer &out, int64_t val) {
-  buf_append_u8(out, TAG_INT);
-  buf_append_i64(out, val);
-}
-
-static void out_arr(Buffer &out, uint32_t n) {
-  buf_append_u8(out, TAG_ARR);
-  buf_append_u32(out, n);
-}
-
-static size_t out_begin_arr(Buffer &out) {
-  buf_append_u8(out, TAG_ARR);
-  buf_append_u32(out, 0);
-  return out.size() - 4;
-}
-
-static void out_end_arr(Buffer &out, size_t ctx, uint32_t n) {
-  assert(out[ctx - 1] == TAG_ARR);
-  std::memcpy(&out[ctx], &n, 4);
-}
-
-static void out_dbl(Buffer &out, double val) {
-  buf_append_u8(out, TAG_DBL);
-  buf_append_dbl(out, val);
-}
-
-static void out_err(Buffer &out, uint32_t errCode, const std::string &msg) {
-  buf_append_u8(out, TAG_ERR);
-  buf_append_u32(out, errCode);
-  buf_append_u32(out, static_cast<uint32_t>(msg.size()));
-  buf_append(out, reinterpret_cast<const uint8_t *>(msg.data()), msg.size());
 }
 
 static struct {
@@ -222,7 +147,7 @@ static bool entry_eq(HNode *lhs, HNode *rhs) {
 
 static void response_begin(Buffer &buf, size_t *header) {
   *header = buf.size();
-  buf_append_u32(buf, 0);
+  ownredis::proto::buf_append_u32(buf, 0);
 }
 
 static size_t response_size(Buffer &buf, size_t header) {
@@ -234,7 +159,7 @@ static void response_end(Buffer &buf, size_t header) {
   if (msg_len > k_max_msg) {
     buf.resize(
         boost::container::devector<unsigned char>::size_type(header + 4));
-    out_err(buf, ERR_TOO_BIG, "Message too large");
+    ownredis::proto::out_err(buf, ownredis::ERR_TOO_BIG, "Message too large");
     msg_len = response_size(buf, header);
   }
 
@@ -250,15 +175,15 @@ static void do_get(std::vector<std::string> &cmd, Buffer &buf) {
 
   HNode *node = hm_lookup(&g_data.db, &key.node, &entry_eq);
   if (!node) {
-    return out_nil(buf);
+    return ownredis::proto::out_nil(buf);
   }
 
   // copy value
   Entry *ent = container_of(node, Entry, node);
   if (ent->type != T_STR) {
-    out_err(buf, ERR_BAD_TYPE, "not a string value");
+    ownredis::proto::out_err(buf, ownredis::ERR_BAD_TYPE, "not a string value");
   };
-  return out_str(buf, ent->str.data(), ent->str.length());
+  return ownredis::proto::out_str(buf, ent->str.data(), ent->str.length());
 }
 
 static void do_set(std::vector<std::string> &cmd, Buffer &buf) {
@@ -271,7 +196,8 @@ static void do_set(std::vector<std::string> &cmd, Buffer &buf) {
   if (node) {
     Entry *ent = container_of(node, Entry, node);
     if (ent->type != T_STR) {
-      return out_err(buf, ERR_BAD_TYPE, "not a string value exists");
+      return ownredis::proto::out_err(buf, ownredis::ERR_BAD_TYPE,
+                                      "not a string value exists");
     }
     ent->str.swap(cmd[2]);
   } else {
@@ -281,7 +207,7 @@ static void do_set(std::vector<std::string> &cmd, Buffer &buf) {
     ent->str.swap(cmd[2]);
     hm_insert(&g_data.db, &ent->node);
   }
-  return out_nil(buf);
+  return ownredis::proto::out_nil(buf);
 }
 
 static void do_del(std::vector<std::string> &cmd, Buffer &buf) {
@@ -295,7 +221,7 @@ static void do_del(std::vector<std::string> &cmd, Buffer &buf) {
   if (node) {
     entry_del(container_of(node, Entry, node));
   }
-  return out_int(buf, node ? 1 : 0);
+  return ownredis::proto::out_int(buf, node ? 1 : 0);
 }
 
 static bool cb_keys(HNode *nodeP, void *arg) {
@@ -310,12 +236,12 @@ static bool cb_keys(HNode *nodeP, void *arg) {
   std::cout << entPtr->key.length();
   std::cout << entPtr->key;
   const std::string &key = (container_of(nodeP, Entry, node)->key);
-  out_str(out, key.data(), key.size());
+  ownredis::proto::out_str(out, key.data(), key.size());
   return true;
 }
 
 static void do_keys(std::vector<std::string> &, Buffer &buf) {
-  out_arr(buf, static_cast<uint32_t>(hm_size(&g_data.db)));
+  ownredis::proto::out_arr(buf, static_cast<uint32_t>(hm_size(&g_data.db)));
   // std::cout << hm_size(&g_data.db);
   hm_foreach(&g_data.db, &cb_keys, reinterpret_cast<void *>(&buf));
 }
@@ -335,7 +261,8 @@ static bool str2int(const std::string &s, int64_t &out) {
 static void do_zadd(std::vector<std::string> &cmd, Buffer &buf) {
   double score;
   if (!str2dbl(cmd[2], score)) {
-    return out_err(buf, ERR_BAD_ARG, "expected double(float)");
+    return ownredis::proto::out_err(buf, ownredis::ERR_BAD_ARG,
+                                    "expected double(float)");
   }
 
   LookupKey key;
@@ -353,13 +280,14 @@ static void do_zadd(std::vector<std::string> &cmd, Buffer &buf) {
   } else {
     ent = container_of(hnode, Entry, node);
     if (ent->type != T_ZSET) {
-      return out_err(buf, ERR_BAD_TYPE, "expect zset");
+      return ownredis::proto::out_err(buf, ownredis::ERR_BAD_TYPE,
+                                      "expect zset");
     }
   }
 
   std::string name = cmd[3];
   bool added = zset_insert(&ent->zset, name.data(), name.length(), score);
-  return out_int(buf, (int64_t)added);
+  return ownredis::proto::out_int(buf, (int64_t)added);
 }
 
 static const ZSet k_empty_zset;
@@ -383,7 +311,7 @@ static ZSet *expect_zset(std::string &s) {
 static void do_zrem(std::vector<std::string> &cmd, Buffer &buf) {
   ZSet *zset = expect_zset(cmd[1]);
   if (!zset) {
-    return out_err(buf, ERR_BAD_TYPE, "expect zset");
+    return ownredis::proto::out_err(buf, ownredis::ERR_BAD_TYPE, "expect zset");
   }
   std::string name = cmd[2];
   ZNode *node = zset_lookup(zset, name.data(), name.size());
@@ -391,25 +319,27 @@ static void do_zrem(std::vector<std::string> &cmd, Buffer &buf) {
   if (node) {
     zset_delete(zset, node);
   }
-  return out_int(buf, node ? 1 : 0);
+  return ownredis::proto::out_int(buf, node ? 1 : 0);
 }
 
 // zscore zset zname
 static void do_zscore(std::vector<std::string> &cmd, Buffer &buf) {
   ZSet *zset = expect_zset(cmd[1]);
   if (!zset) {
-    return out_err(buf, ERR_BAD_TYPE, "expect zset");
+    return ownredis::proto::out_err(buf, ownredis::ERR_BAD_TYPE, "expect zset");
   }
 
   std::string name = cmd[2];
   ZNode *node = zset_lookup(zset, name.data(), name.length());
-  return node ? out_dbl(buf, node->score) : out_nil(buf);
+  return node ? ownredis::proto::out_dbl(buf, node->score)
+              : ownredis::proto::out_nil(buf);
 }
 // zquery zset score name offset limint
 static void do_zquery(std::vector<std::string> &cmd, Buffer &buf) {
   double score;
   if (!str2dbl(cmd[2], score)) {
-    return out_err(buf, ERR_BAD_ARG, "expected fp number");
+    return ownredis::proto::out_err(buf, ownredis::ERR_BAD_ARG,
+                                    "expected fp number");
   }
 
   const std::string &name = cmd[3];
@@ -417,31 +347,32 @@ static void do_zquery(std::vector<std::string> &cmd, Buffer &buf) {
   int64_t limit = 0;
 
   if (!str2int(cmd[4], offset) || !str2int(cmd[5], limit)) {
-    return out_err(buf, ERR_BAD_ARG, "expected int");
+    return ownredis::proto::out_err(buf, ownredis::ERR_BAD_ARG, "expected int");
   }
 
   ZSet *zset = expect_zset(cmd[1]);
   if (!zset) {
-    return out_err(buf, ERR_BAD_TYPE, "expected zset");
+    return ownredis::proto::out_err(buf, ownredis::ERR_BAD_TYPE,
+                                    "expected zset");
   }
 
   if (limit <= 0) {
-    return out_int(buf, 0);
+    return ownredis::proto::out_int(buf, 0);
   }
 
   ZNode *znode = zset_seekge(zset, score, name.data(), name.size());
   znode = zset_offset(znode, offset);
 
-  size_t ctx = out_begin_arr(buf);
+  size_t ctx = ownredis::proto::out_begin_arr(buf);
   int64_t n = 0;
   while (znode && n < limit) {
-    out_str(buf, znode->name, znode->len);
-    out_dbl(buf, znode->score);
+    ownredis::proto::out_str(buf, znode->name, znode->len);
+    ownredis::proto::out_dbl(buf, znode->score);
     znode = zset_offset(znode, +1);
     n += 2;
   }
 
-  out_end_arr(buf, ctx, static_cast<uint32_t>(n));
+  ownredis::proto::out_end_arr(buf, ctx, static_cast<uint32_t>(n));
 }
 
 static void do_request(std::vector<std::string> &cmd, Buffer &buf) {
@@ -462,7 +393,7 @@ static void do_request(std::vector<std::string> &cmd, Buffer &buf) {
   } else if (cmd.size() == 6 && cmd[0] == "zquery") {
     do_zquery(cmd, buf);
   } else {
-    out_err(buf, ERR_UNKNOWN, "unknown command");
+    ownredis::proto::out_err(buf, ownredis::ERR_UNKNOWN, "unknown command");
   }
 }
 
@@ -503,7 +434,7 @@ static bool try_one_request(Conn &conn) {
   response_end(conn.outgoing, header_pos);
 
   //! remove message
-  buf_consume(conn.incoming, len + 4);
+  ownredis::proto::buf_consume(conn.incoming, len + 4);
 
   return true;
 }
@@ -528,7 +459,7 @@ static void handle_write(Conn &conn) {
   }
 
   //! remove sended messgae
-  buf_consume(conn.outgoing, rv);
+  ownredis::proto::buf_consume(conn.outgoing, rv);
 
   if (conn.outgoing.size() == 0) {
     conn.want_read = true;
@@ -562,7 +493,7 @@ static void handle_read(Conn &conn) {
   }
 
   //! got new data
-  buf_append(conn.incoming, buf, static_cast<size_t>(rv));
+  ownredis::proto::buf_append(conn.incoming, buf, static_cast<size_t>(rv));
 
   //! handel requests line...
   while (try_one_request(conn)) {

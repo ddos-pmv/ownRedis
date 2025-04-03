@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 #include <zset.h>
 
+using ZNode = ownredis::ZNode;
+using ZSet = ownredis::ZSet;
+
 struct Data {
   std::string str;
   ZSet* zset;
