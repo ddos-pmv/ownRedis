@@ -14,7 +14,9 @@ enum {
 
 enum { ERR_UNKNOWN = 0, ERR_TOO_BIG = 1, ERR_BAD_TYPE = 2, ERR_BAD_ARG = 3 };
 
-constexpr size_t k_max_msg = 4096;
+// constexpr size_t k_max_msg = 4096;
+constexpr size_t k_max_msg = 32 << 20;
+constexpr size_t k_max_args = 200 * 1000;
 
 namespace proto {}  // namespace proto
 }  // namespace ownredis

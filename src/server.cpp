@@ -1,49 +1,29 @@
+#include "ownredis/server.h"
+
+// mylibs
+#include <Proto/buf_utils.h>
+#include <Proto/out_utils.h>
+#include <Proto/proto.h>
+#include <Proto/types.h>
+#include <hashtable.h>
+#include <utils.h>
+#include <zset.h>
+
 // system
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <poll.h>
 #include <sys/socket.h>
-#include <unistd.h>
-// My libs
-#include <Proto/buf_utils.h>
-#include <Proto/out_utils.h>
-#include <Proto/types.h>
-#include <hashtable.h>
-#include <utils.h>
-#include <zset.h>
 
-// #include <boost/container/devector.hpp>
 // C/C++
 #include <cassert>
-#include <cerrno>
-#include <cstddef>
-#include <deque>
-#include <iostream>
-#include <map>
-#include <unordered_map>
-
-#include "Protocol.h"
 
 using ZSet = ownredis::ZSet;
 using Buffer = ownredis::Buffer;
 using ZNode = ownredis::ZNode;
 using HNode = ownredis::HNode;
 using HMap = ownredis::HMap;
-
-const size_t k_max_msg = 32 << 20;
-const size_t k_max_args = 200 * 1000;
-
-static void die(const char *msg) {
-  std::cerr << msg << ": " << std::strerror(errno) << '\n';
-  abort();
-}
-
-static void msg_errno(const char *msg) {
-  std::cerr << "errno: " << std::strerror(errno) << ". " << msg << '\n';
-}
-
-static void msg(const char *msg) { std::cout << msg << '\n'; }
 
 static void fd_set_nb(int fd) {
   errno = 0;
@@ -156,7 +136,7 @@ static size_t response_size(Buffer &buf, size_t header) {
 
 static void response_end(Buffer &buf, size_t header) {
   size_t msg_len = response_size(buf, header);
-  if (msg_len > k_max_msg) {
+  if (msg_len > ownredis::k_max_msg) {
     buf.resize(
         boost::container::devector<unsigned char>::size_type(header + 4));
     ownredis::proto::out_err(buf, ownredis::ERR_TOO_BIG, "Message too large");
@@ -404,7 +384,7 @@ static bool try_one_request(Conn &conn) {
 
   uint32_t len = 0;
   std::memcpy(&len, conn.incoming.data(), 4);
-  if (len > k_max_msg) {
+  if (len > ownredis::k_max_msg) {
     msg("too long msg (greater then k_max_msg)");
     conn.want_close = true;
     return false;
@@ -418,7 +398,7 @@ static bool try_one_request(Conn &conn) {
   const uint8_t *request = &conn.incoming[4];
 
   std::vector<std::string> cmd;  // cmd exmaple: set [key] [value]
-  if (Protocol::parse_request(request, cmd, len) < 0) {
+  if (ownredis::proto::parse_request(request, cmd, len) < 0) {
     msg("bad request");
     conn.want_close = true;
     return false;  // error parsing
@@ -506,7 +486,10 @@ static void handle_read(Conn &conn) {
   }
 }
 
-int main() {
+namespace ownredis {
+namespace server {
+
+bool start_server(uint16_t port, const std::vector<std::string> &addrs) {
   signal(SIGPIPE, SIG_IGN);
 
   int fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -613,3 +596,6 @@ int main() {
   }
   return 0;
 }
+
+}  // namespace server
+}  // namespace ownredis

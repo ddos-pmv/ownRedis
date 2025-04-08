@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include <cstdint>
+#include <iostream>
 
 // namespace ownredis {
 
@@ -20,5 +21,16 @@ inline uint64_t str_hash(const uint8_t *data, size_t len) {
   }
   return h;
 }
+
+static void die(const char *msg) {
+  std::cerr << msg << ": " << std::strerror(errno) << '\n';
+  abort();
+}
+
+static void msg_errno(const char *msg) {
+  std::cerr << "errno: " << std::strerror(errno) << ". " << msg << '\n';
+}
+
+static void msg(const char *msg) { std::cout << msg << '\n'; }
 
 // }  // namespace ownredis
