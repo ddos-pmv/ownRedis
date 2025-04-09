@@ -4,7 +4,7 @@
 namespace ownredis {
 namespace proto {
 
-void buf_append(Buffer &buf, const uint8_t *data, size_t len) {
+inline void buf_append(Buffer &buf, const uint8_t *data, size_t len) {
   buf.insert(buf.end(), data, data + len);
 }
 

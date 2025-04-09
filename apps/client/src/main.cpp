@@ -140,7 +140,7 @@ static int32_t print_response(const uint8_t *data, size_t size) {
 
 static int32_t read_res(int fd) {
   // 4 bytes header
-  char rbuf[4 + ownredis::k_max_msg + 1];
+  char rbuf[4 + ownredis ::k_max_msg + 1];
   errno = 0;
   int32_t err = read_full(fd, rbuf, 4);
   if (err) {
@@ -195,7 +195,7 @@ int main(int argc, char **argv) {
     cmd.push_back(argv[i]);
   }
 
-  int32_t err = ownredis::proto::send_req(fd, cmd);
+  int32_t err = proto::send_req(fd, cmd);
   if (err) {
     goto L_DONE;
   }

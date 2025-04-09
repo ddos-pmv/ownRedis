@@ -1,5 +1,6 @@
 add_library(ownredis
  server.cpp
+ cli.cpp
 )
 
 target_include_directories(ownredis PUBLIC ${CMAKE_SOURCE_DIR}/include)

@@ -504,8 +504,8 @@ bool start_server(uint16_t port, const std::vector<std::string> &addrs) {
   //! Bind the socket to a port
   sockaddr_in addr{};
   addr.sin_family = AF_INET;
-  addr.sin_addr.s_addr = htonl(0);
-  addr.sin_port = htons(1234);
+  addr.sin_addr.s_addr = INADDR_ANY;
+  addr.sin_port = htons(port);
 
   int rv = bind(fd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr));
   if (rv < 0) {
