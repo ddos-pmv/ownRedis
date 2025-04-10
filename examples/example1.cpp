@@ -21,11 +21,11 @@ void print_cmd(const std::vector<std::string> &cmd) {
 }
 using namespace std::chrono_literals;
 int main() {
-  uint16_t server_port = 1235;
+  uint16_t server_port = 1234;
 
   std::thread server_th(
       [=]() { ownredis::server::start_server(server_port, {}); });
-  std::cout << "SERVER PID:" << server_th.get_id();
+  std::cout << "SERVER PID:" << server_th.get_id() << '\n';
 
   std::this_thread::sleep_for(2000ms);
   int fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -44,12 +44,13 @@ int main() {
     std::terminate();
   }
 
-  std::vector<std::string> req = {"set", "hello", "world"};
+  static std::vector<std::string> req = {"set", "hello", "world"};
+  std::cout << req.size();
   ownredis::cli::send_req(fd, req);
   std::cout << "[client]:";
   print_cmd(req);
 
-  std::vector<std::string> resp;
+  static std::vector<std::string> resp = {};
   ownredis::cli::read_res(fd, resp);
   std::cout << "[server]:";
   print_cmd(resp);
@@ -64,6 +65,7 @@ int main() {
   ownredis::cli::read_res(fd, resp);
   std::cout << "[server]:";
   print_cmd(resp);
+
   server_th.join();
   return 0;
 }

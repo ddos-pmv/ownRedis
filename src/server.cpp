@@ -490,7 +490,7 @@ namespace ownredis {
 namespace server {
 
 bool start_server(uint16_t port, const std::vector<std::string> &addrs) {
-  signal(SIGPIPE, SIG_IGN);
+  // signal(SIGPIPE, SIG_IGN);
 
   int fd = socket(AF_INET, SOCK_STREAM, 0);
   if (fd < 0) {

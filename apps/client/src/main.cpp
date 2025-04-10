@@ -40,15 +40,6 @@ static int32_t read_full(int fd, char *buf, size_t n) {
 
 // const size_t k_max_msg = 4096;
 
-// enum {
-//   TAG_NIL = 0,  // nil
-//   TAG_ERR = 1,  // error code + msg
-//   TAG_STR = 2,  // string
-//   TAG_INT = 3,  // int64
-//   TAG_DBL = 4,  // double
-//   TAG_ARR = 5,  // array
-// };
-
 static int32_t print_response(const uint8_t *data, size_t size) {
   if (size < 1) {
     msg("bad response");

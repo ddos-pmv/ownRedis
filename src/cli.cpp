@@ -4,22 +4,23 @@
 #include <Proto/types.h>
 #include <utils.h>
 
-namespace ownredis {
+#include <string>
+#include <vector>
 // incoming/outgoing buffer example
 // -----4b-----+---4b--+--4b--+------+------+------+
 // len of msg  |  nstr | len1 | str1 | len2 | str2 |
 // ----------- +-------+------+------+------+------+
 //---------------------+----cmd1-----+-----arg1----+
-int32_t cli::send_req(int fd, const std::vector<std::string> &cmd) {
+int32_t ownredis::cli::send_req(int fd, const std::vector<std::string> &cmd) {
   uint32_t len = 4;
   for (const std::string &s : cmd) {
     len += 4 + s.size();
   }
-  if (len > k_max_msg) {
+  if (len > ownredis::cli::k_max_msg) {
     return -1;
   }
 
-  char wbuf[4 + k_max_msg];
+  char wbuf[4 + ownredis::cli::k_max_msg];
   memcpy(&wbuf[0], &len, 4);  // assume little endian
   uint32_t n = (uint32_t)cmd.size();
   memcpy(&wbuf[4], &n, 4);
@@ -32,9 +33,9 @@ int32_t cli::send_req(int fd, const std::vector<std::string> &cmd) {
   }
   return proto::write_all(fd, wbuf, 4 + len);
 }
-size_t cli::read_res(int fd, std::vector<std::string> &ans) {
+size_t ownredis::cli::read_res(int fd, std::vector<std::string> &ans) {
   size_t start_index = ans.size() - 1;
-  char rbuf[4 + k_max_msg + 1];
+  char rbuf[4 + ownredis::cli::k_max_msg + 1];
   errno = 0;
   int32_t err = proto::read_full(fd, rbuf, 4);
   if (err) {
@@ -50,7 +51,7 @@ size_t cli::read_res(int fd, std::vector<std::string> &ans) {
 
   uint32_t len = 0;
   memcpy(&len, rbuf, 4);  // assume little endian
-  if (len > k_max_msg) {
+  if (len > ownredis::cli::k_max_msg) {
     msg("too long");
     return -1;
   }
@@ -68,5 +69,3 @@ size_t cli::read_res(int fd, std::vector<std::string> &ans) {
   }
   return start_index;
 }
-
-}  // namespace ownredis
