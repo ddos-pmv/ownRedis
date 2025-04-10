@@ -19,11 +19,16 @@ add_subdirectory(modules/AVLTree)
 add_subdirectory(modules/HMap)
 add_subdirectory(modules/ZSet)
 add_subdirectory(modules/Utils)
+add_subdirectory(modules/Proto)
 
-add_subdirectory(apps/server)
-add_subdirectory(apps/client)
+add_subdirectory(src)
 
-add_subdirectory(tests)
+add_subdirectory(examples)
+
+# add_subdirectory(apps/server)
+# add_subdirectory(apps/client)
+
+#add_subdirectory(tests)
 
 message(STATUS "Project" ${PROJECT_NAME} "configured successfully")
 

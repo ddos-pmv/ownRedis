@@ -1,9 +1,8 @@
-#ifndef HASHTABLE_H
-#define HASHTABLE_H
-
 #pragma once
 
 #include <unistd.h>
+
+namespace ownredis {
 
 struct HNode {
   uint64_t hcode = 0;
@@ -33,5 +32,4 @@ void hm_clear(HMap *map);
 size_t hm_size(HMap *map);
 
 void hm_foreach(HMap *map, bool (*f)(HNode *, void *), void *arg);
-
-#endif  // HASHTABLE_H
+}  // namespace ownredis

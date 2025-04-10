@@ -1,4 +1,5 @@
 #include "avl.h"
+namespace ownredis {
 
 static uint32_t max(uint32_t lhs, uint32_t rhs) {
   return lhs > rhs ? lhs : rhs;
@@ -172,3 +173,5 @@ AVLNode* avl_offset(AVLNode* node, int64_t offset) {
 
   return node;
 }
+
+}  // namespace ownredis

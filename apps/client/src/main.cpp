@@ -1,3 +1,7 @@
+// local libs
+#include <Proto/proto.h>
+#include <Proto/types.h>
+// sys libs
 #include <arpa/inet.h>
 #include <assert.h>
 #include <errno.h>
@@ -9,6 +13,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+// c++ libs
 #include <string>
 #include <vector>
 
@@ -33,52 +38,7 @@ static int32_t read_full(int fd, char *buf, size_t n) {
   return 0;
 }
 
-static int32_t write_all(int fd, const char *buf, size_t n) {
-  while (n > 0) {
-    ssize_t rv = write(fd, buf, n);
-    if (rv <= 0) {
-      return -1;  // error
-    }
-    assert((size_t)rv <= n);
-    n -= (size_t)rv;
-    buf += rv;
-  }
-  return 0;
-}
-
-const size_t k_max_msg = 4096;
-
-static int32_t send_req(int fd, const std::vector<std::string> &cmd) {
-  uint32_t len = 4;
-  for (const std::string &s : cmd) {
-    len += 4 + s.size();
-  }
-  if (len > k_max_msg) {
-    return -1;
-  }
-
-  char wbuf[4 + k_max_msg];
-  memcpy(&wbuf[0], &len, 4);  // assume little endian
-  uint32_t n = (uint32_t)cmd.size();
-  memcpy(&wbuf[4], &n, 4);
-  size_t cur = 8;
-  for (const std::string &s : cmd) {
-    uint32_t p = (uint32_t)s.size();
-    memcpy(&wbuf[cur], &p, 4);
-    memcpy(&wbuf[cur + 4], s.data(), s.size());
-    cur += 4 + s.size();
-  }
-  return write_all(fd, wbuf, 4 + len);
-}
-
-enum {
-  TAG_NIL = 0,  // nil
-  TAG_ERR = 1,  // error code + msg
-  TAG_STR = 2,  // string
-  TAG_INT = 3,  // int64
-  TAG_DBL = 4,  // double
-  TAG_ARR = 5,  // array
-};
+// const size_t k_max_msg = 4096;
 
 static int32_t print_response(const uint8_t *data, size_t size) {
   if (size < 1) {
@@ -86,10 +46,10 @@ static int32_t print_response(const uint8_t *data, size_t size) {
     return -1;
   }
   switch (data[0]) {
-    case TAG_NIL:
+    case ownredis::TAG_NIL:
       printf("(nil)\n");
       return 1;
-    case TAG_ERR:
+    case ownredis::TAG_ERR:
       if (size < 1 + 8) {
         msg("bad response");
         return -1;
@@ -106,7 +66,7 @@ static int32_t print_response(const uint8_t *data, size_t size) {
         printf("(err) %d %.*s\n", code, len, &data[1 + 8]);
         return 1 + 8 + len;
       }
-    case TAG_STR:
+    case ownredis::TAG_STR:
       if (size < 1 + 4) {
         msg("bad response");
         return -1;
@@ -121,7 +81,7 @@ static int32_t print_response(const uint8_t *data, size_t size) {
         printf("(str) %.*s\n", len, &data[1 + 4]);
         return 1 + 4 + len;
       }
-    case TAG_INT:
+    case ownredis::TAG_INT:
       if (size < 1 + 8) {
         msg("bad response");
         return -1;
@@ -132,7 +92,7 @@ static int32_t print_response(const uint8_t *data, size_t size) {
         printf("(int) %llu\n", val);
         return 1 + 8;
       }
-    case TAG_DBL:
+    case ownredis::TAG_DBL:
       if (size < 1 + 8) {
         msg("bad response");
         return -1;
@@ -143,7 +103,7 @@ static int32_t print_response(const uint8_t *data, size_t size) {
         printf("(dbl) %g\n", val);
         return 1 + 8;
       }
-    case TAG_ARR:
+    case ownredis::TAG_ARR:
       if (size < 1 + 4) {
         msg("bad response");
         return -1;
@@ -171,7 +131,7 @@ static int32_t print_response(const uint8_t *data, size_t size) {
 
 static int32_t read_res(int fd) {
   // 4 bytes header
-  char rbuf[4 + k_max_msg + 1];
+  char rbuf[4 + ownredis ::k_max_msg + 1];
   errno = 0;
   int32_t err = read_full(fd, rbuf, 4);
   if (err) {
@@ -185,7 +145,7 @@ static int32_t read_res(int fd) {
 
   uint32_t len = 0;
   memcpy(&len, rbuf, 4);  // assume little endian
-  if (len > k_max_msg) {
+  if (len > ownredis::k_max_msg) {
     msg("too long");
     return -1;
   }
@@ -225,7 +185,8 @@ int main(int argc, char **argv) {
   for (int i = 1; i < argc; ++i) {
     cmd.push_back(argv[i]);
   }
-  int32_t err = send_req(fd, cmd);
+
+  int32_t err = proto::send_req(fd, cmd);
   if (err) {
     goto L_DONE;
   }
